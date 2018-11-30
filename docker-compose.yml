@@ -16,6 +16,8 @@ services:
     container_name: edx.devstack.chrome
     image: edxops/chrome:${OPENEDX_RELEASE:-latest}
     shm_size: 2g
+    environment:
+      CONTAINER_NAME: edx.devstack.chrome
     ports:
       - "15900:5900"
     volumes:  # for file uploads
@@ -25,6 +27,8 @@ services:
   elasticsearch:
     container_name: edx.devstack.elasticsearch
     image: edxops/elasticsearch:devstack
+    environment:
+      CONTAINER_NAME: edx.devstack.elasticsearch
     # TODO: What to do about these forwarded ports? They'll conflict with ports forwarded by the Vagrant VM.
     # ports:
     #   - "9200:9200"
@@ -37,6 +41,8 @@ services:
     container_name: edx.devstack.firefox
     image: edxops/firefox:${OPENEDX_RELEASE:-latest}
     shm_size: 2g
+    environment:
+      CONTAINER_NAME: edx.devstack.firefox
     ports:
       - "25900:5900"
     volumes:  # for file uploads
@@ -46,6 +52,8 @@ services:
   memcached:
     container_name: edx.devstack.memcached
     image: memcached:1.4.24
+    environment:
+      CONTAINER_NAME: edx.devstack.memcached
     # ports:
     #   - "11211:11211"
 
@@ -56,6 +64,8 @@ services:
     command: mongod --smallfiles --nojournal --storageEngine wiredTiger
     container_name: edx.devstack.mongo
     image: mongo:3.2.16
+    environment:
+      CONTAINER_NAME: edx.devstack.mongo
     # ports:
     #  - "27017:27017"
     volumes:
@@ -65,6 +75,7 @@ services:
     command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
     container_name: edx.devstack.mysql
     environment:
+      CONTAINER_NAME: edx.devstack.mysql
       MYSQL_ROOT_PASSWORD: ""
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     image: mysql:5.6
@@ -84,6 +95,7 @@ services:
     stdin_open: true
     tty: true
     environment:
+      CONTAINER_NAME: edx.devstack.credentials
       CACHE_LOCATION: edx.devstack.memcached:12211
       DB_HOST: edx.devstack.mysql
       SOCIAL_AUTH_EDX_OIDC_URL_ROOT: http://edx.devstack.lms:18000/oauth2
@@ -103,6 +115,7 @@ services:
     stdin_open: true
     tty: true
     environment:
+      CONTAINER_NAME: edx.devstack.discovery
       TEST_ELASTICSEARCH_URL: "http://edx.devstack.elasticsearch:9200"
       ENABLE_DJANGO_TOOLBAR: 1
     image: edxops/discovery:${OPENEDX_RELEASE:-latest}
@@ -121,6 +134,7 @@ services:
     stdin_open: true
     tty: true
     environment:
+      CONTAINER_NAME: edx.devstack.ecommerce
       ENABLE_DJANGO_TOOLBAR: 1
     image: edxops/ecommerce:${OPENEDX_RELEASE:-latest}
     ports:
@@ -141,6 +155,7 @@ services:
       BOK_CHOY_HOSTNAME: edx.devstack.lms
       BOK_CHOY_LMS_PORT: 18003
       BOK_CHOY_CMS_PORT: 18031
+      CONTAINER_NAME: edx.devstack.lms
       EDXAPP_TEST_MONGO_HOST: edx.devstack.mongo
       NO_PYTHON_UNINSTALL: 1
     image: edxops/edxapp:${OPENEDX_RELEASE:-latest}
@@ -163,6 +178,7 @@ services:
     ports:
       - "18120:18120"
     environment:
+      CONTAINER_NAME: edx.devstack.edx_notes_api
       DB_ENGINE: "django.db.backends.mysql"
       DB_HOST: "edx.devstack.mysql"
       DB_NAME: "notes"
@@ -187,6 +203,7 @@ services:
       BOK_CHOY_HOSTNAME: edx.devstack.studio
       BOK_CHOY_LMS_PORT: 18103
       BOK_CHOY_CMS_PORT: 18131
+      CONTAINER_NAME: edx.devstack.studio
       EDXAPP_TEST_MONGO_HOST: edx.devstack.mongo
       NO_PYTHON_UNINSTALL: 1
     image: edxops/edxapp:${OPENEDX_RELEASE:-latest}
@@ -206,12 +223,16 @@ services:
       - memcached
       - elasticsearch
     image: edxops/forum:${OPENEDX_RELEASE:-latest}
+    environment:
+      CONTAINER_NAME: edx.devstack.forum
     ports:
       - "44567:4567"
 
   devpi:
     container_name: edx.devstack.devpi
     image: edxops/devpi:${OPENEDX_RELEASE:-latest}
+    environment:
+      CONTAINER_NAME: edx.devstack.devpi
     ports:
       - "3141:3141"
     volumes:
